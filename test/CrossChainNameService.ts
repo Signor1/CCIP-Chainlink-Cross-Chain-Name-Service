@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
 import { assert } from "chai";
-import { PromiseOrValue } from "../typechain-types/common";
 import { BigNumber } from "ethers";
 
 // defining the registration name
@@ -150,3 +149,10 @@ try {
 } catch (error: any) {
   console.error(error);
 }
+
+/*
+To execute this test, run the following command:
+npm install 
+npx hardhat node (in a different terminal) - to spin up the locahost & hardhat node
+npx hardhat test --network localhost
+*/
