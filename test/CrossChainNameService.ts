@@ -31,7 +31,7 @@ let config: {
 
 // main function
 try {
-  describe("CrossChainNameService Testing", function () {
+  describe("CrossChainNameService Testing", async function () {
     // Deploying CCIPLocalSimulator.sol
     it("Should deploy Local Simulator and be able to call configuration", async function () {
       // alice is the first account
@@ -110,6 +110,41 @@ try {
       );
 
       console.log("✅ CrossChainNameService contracts deployed");
+    });
+
+    // Registering name and Verifying it
+    it("Should be able to register a name and verify it", async function () {
+      /* 
+      It was stated that the name and the address should be passed as arguments. However, the function signature of the register function in CrossChainNameServiceRegister.sol is register(string memory name) and the address is derived from the sender's address.
+      */
+      await CCNS_register.register(reg_name);
+
+      const source_res = await CCNS_lookup_source.lookup(reg_name);
+
+      assert.notEqual(
+        source_res,
+        0,
+        "Source Receiver Lookup result must not be zero"
+      );
+      assert.equal(
+        source_res,
+        alice.address,
+        "Source Lookup result must be the same as the sender's address"
+      );
+
+      const destination_res = await CCNS_lookup_receiver.lookup(reg_name);
+
+      assert.equal(
+        source_res,
+        destination_res,
+        "Source and Destination lookups don't match."
+      );
+
+      console.table({
+        Name: reg_name,
+        Source: source_res,
+        Destination: destination_res,
+      });
     });
   });
 } catch (error: any) {
